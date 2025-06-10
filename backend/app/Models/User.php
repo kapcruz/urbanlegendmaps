@@ -47,4 +47,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function urbanLegends()
+    {
+        return $this->hasMany(UrbanLegend::class);
+    }
+
 }

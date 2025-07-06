@@ -1,5 +1,6 @@
 services:
     app:
+        container_name: urbanlegend_app
         build:
             context: './vendor/laravel/sail/runtimes/8.4'
             dockerfile: Dockerfile
@@ -20,7 +21,7 @@ services:
         volumes:
             - '.:/var/www/html'
         networks:
-            - sail
+            - urban_legend
         depends_on:
             - mysql
     mysql:
@@ -36,7 +37,7 @@ services:
             - 'sail-mysql:/var/lib/mysql'
             - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
         networks:
-            - sail
+            - urban_legend
         healthcheck:
             test:
                 - CMD
@@ -50,11 +51,11 @@ services:
         ports:
             - 8080:80
         networks:
-            - sail
+            - urban_legend
         environment:
             - PMA_ARBITRARY=1
 networks:
-    sail:
+    urban_legend:
         driver: bridge
 volumes:
     sail-mysql:

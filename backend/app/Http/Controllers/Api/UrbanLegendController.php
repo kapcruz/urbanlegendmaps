@@ -8,16 +8,45 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreUrbanLegendRequest;
 use Illuminate\Http\Request;
 use App\Models\UrbanLegend;
-
+use App\Models\User;
 
 class UrbanLegendController extends Controller
 {
+
+    public function show(Request $request)
+    {
+        $legends = UrbanLegend::query();
+
+        if ($request->has('country')) {
+            $legends->where('country', $request->country);
+        }
+        if ($request->has('city')) {
+            $legends->where('city', $request->city);
+        }
+
+        $legends = $legends->get();
+
+        $filtered = $legends->map(function ($legend) {
+            return [
+                'title' => $legend->title,
+                'description' => $legend->description,
+                'latitude' => $legend->latitude,
+                'longitude' => $legend->longitude,
+                'country' => $legend->country,
+                'city' => $legend->city
+            ];
+        });
+
+        return response()->json($filtered);
+    }
     public function store(StoreUrbanLegendRequest $request)
     {
         try {
             $validatedData = $request->validated();
 
-            $validatedData['user_id'] = 1;
+            $user = User::first();
+            $validatedData['user_id'] = $user->id;
+
             $post = UrbanLegend::create($validatedData);
 
             return response()->json([

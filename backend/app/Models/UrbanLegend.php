@@ -13,6 +13,7 @@ class UrbanLegend extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+    protected $hidden = ['id', 'user_id'];
     protected $fillable = [
         'uuid', 'user_id', 'title', 'description', 'latitude', 'longitude', 'country', 'city',
     ];

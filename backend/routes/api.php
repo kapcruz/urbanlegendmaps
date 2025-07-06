@@ -2,11 +2,12 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\IsAllowPost;
-use App\Http\Controllers\Api\PostController;
+use App\Http\Middleware\IsAllowUrbanLegend;
+use App\Http\Controllers\Api\UrbanLegendController;
 
-Route::middleware([IsAllowPost::class])->group(function () {
-    Route::post('/posts', [PostController::class, 'store']);
-    Route::put('/posts/{uuid}', [PostController::class, 'update']);
-    Route::delete('/posts/{uuid}', [PostController::class, 'destroy']);
+Route::middleware([IsAllowUrbanLegend::class])->group(function () {
+    Route::get('/legend', [UrbanLegendController::class, 'show']);
+    Route::post('/legend', [UrbanLegendController::class, 'store']);
+    Route::put('/legend/{uuid}', [UrbanLegendController::class, 'update']);
+    Route::delete('/legend/{uuid}', [UrbanLegendController::class, 'destroy']);
 });

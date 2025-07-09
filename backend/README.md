@@ -6,7 +6,7 @@ Clone the repository and start the containers using Docker Compose:
 ```bash
 git clone git@github.com:kapcruz/urbanlegendmaps.git urbanlegend
 
-cd urbanlegend 
+cd urbanlegend/backend
 
 cp .env.example .env
 

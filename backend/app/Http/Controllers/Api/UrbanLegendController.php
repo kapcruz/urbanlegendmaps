@@ -6,6 +6,7 @@ use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreUrbanLegendRequest;
+use App\Http\Requests\DeleteUrbanLegendRequest;
 use Illuminate\Http\Request;
 use App\Models\UrbanLegend;
 use App\Models\User;
@@ -28,6 +29,7 @@ class UrbanLegendController extends Controller
 
         $filtered = $legends->map(function ($legend) {
             return [
+                'uuid' => $legend->uuid,
                 'title' => $legend->title,
                 'description' => $legend->description,
                 'latitude' => $legend->latitude,
@@ -67,11 +69,11 @@ class UrbanLegendController extends Controller
 
             $validatedData = $request->validated();
 
-            $post = UrbanLegend::select(['uuid' => $uuid])->update($validatedData);
+            $update = UrbanLegend::select(['uuid' => $uuid])->update($validatedData);
 
             return response()->json([
                 'message' => 'Lenda atualizada com sucesso!',
-                'data' => $post,
+                'data' => $update,
             ], 201);
         } catch (Exception $e) {
             return response()->json([
@@ -80,4 +82,23 @@ class UrbanLegendController extends Controller
             ], 500);
         }
     }
+
+
+    public function destroy(DeleteUrbanLegendRequest $request, string $uuid)
+    {
+        try {
+
+           UrbanLegend::select(['uuid' => $uuid])->delete();
+
+            return response()->json([
+                'message' => 'Lenda deletada com sucesso!'
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao criar lendas',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 }

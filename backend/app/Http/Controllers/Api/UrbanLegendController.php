@@ -60,4 +60,24 @@ class UrbanLegendController extends Controller
             ], 500);
         }
     }
+
+    public function update(StoreUrbanLegendRequest $request, string $uuid)
+    {
+        try {
+
+            $validatedData = $request->validated();
+
+            $post = UrbanLegend::select(['uuid' => $uuid])->update($validatedData);
+
+            return response()->json([
+                'message' => 'Lenda atualizada com sucesso!',
+                'data' => $post,
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao criar lendas',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

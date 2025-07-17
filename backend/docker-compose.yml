@@ -6,15 +6,25 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - '80:80'
-      - '5173:5173' # Vite, se estiver usando
     volumes:
       - .:/var/www/html
     networks:
       - urban_legend
     depends_on:
       - mysql
+
+  nginx:
+    image: nginx:latest
+    container_name: urbanlegend_nginx
+    ports:
+      - "8000:80"  # Externo:Interno
+    volumes:
+      - .:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - urban_legend
 
   mysql:
     container_name: urbanlegend_mysql
@@ -24,7 +34,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: urbanlegend
-      MYSQL_USER: root
       MYSQL_PASSWORD: root
     volumes:
       - mysql_data:/var/lib/mysql

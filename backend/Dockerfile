@@ -6,15 +6,13 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libonig-dev \
     libxml2-dev \
-    zip \
-    unzip \
-    curl \
-    git \
-    npm \
-    libzip-dev \
-    libpq-dev \
+    zip unzip curl git npm libzip-dev libpq-dev \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+COPY . /var/www/html
+
 WORKDIR /var/www/html
+
+RUN chown -R www-data:www-data /var/www/html

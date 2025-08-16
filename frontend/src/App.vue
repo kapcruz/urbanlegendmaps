@@ -1,15 +1,7 @@
 <script setup>
-import 'leaflet/dist/leaflet.css'
-import UrbanLegendsMap from './components/maps/UrbanLegendMap.vue'
-
+  import 'leaflet/dist/leaflet.css'
 </script>
 
 <template>
-  <div class="wrapper">
-    <UrbanLegendsMap />
-  </div>
+  <router-view />
 </template>
-
-<style scoped>
-
-</style>

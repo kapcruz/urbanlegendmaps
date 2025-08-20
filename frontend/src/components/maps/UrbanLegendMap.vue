@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
 import * as L from 'leaflet'
 import { useRouter } from 'vue-router'
@@ -7,6 +7,23 @@ import { useRouter } from 'vue-router'
 import marker2x from 'leaflet/dist/images/marker-icon-2x.png'
 import marker1x from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
+import { getLegends } from "../../api/legend"
+
+const legends = ref([])
+const loading = ref(true)
+const error = ref(null)
+
+onMounted(async () => {
+  try {
+    const { data } = await getLegends()
+    legends.value = data
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    loading.value = false
+  }
+})
+console.log(legends);
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: marker2x,

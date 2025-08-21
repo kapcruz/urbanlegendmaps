@@ -5,5 +5,5 @@ export function getLegends() {
 }
 
 export function getLegendBySlug(slug) {
-  return api.get(`/legend/${slug}`)
+  return api.get(`/legends?slug=${slug}`)
 }

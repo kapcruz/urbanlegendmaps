@@ -23,7 +23,6 @@ onMounted(async () => {
     loading.value = false
   }
 })
-console.log(legends);
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: marker2x,
@@ -35,24 +34,11 @@ const router = useRouter()
 
 const center = ref([-15.7942, -47.8825])
 const zoom = ref(4)
-const points = ref([
-  {
-    id: 1,
-    lat: -22.9035, lon: -43.2096,
-    name: 'Loira do Banheiro',
-    slug: 'loira-do-banheiro',
-    links: [
-      { label: 'Detalhes', to: '/loira-do-banheiro' },
-      { label: 'Wikipedia', href: 'https://pt.wikipedia.org/wiki/Loira_do_banheiro' } 
-    ]
-  }
-])
 
 function openLegend(p) {
   router.push(`/${p.slug}`)
 }
 </script>
-
 
 <template>
   <div class="map-container">
@@ -62,23 +48,15 @@ function openLegend(p) {
         attribution="&copy; OpenStreetMap contributors"
       />
       <l-marker
-        v-for="p in points"
-        :key="p.id"
-        :lat-lng="[p.lat, p.lon]"
+        v-for="p in legends"
+        :key="p.uuid"
+        :lat-lng="[p.latitude, p.longitude]"
         @click="openLegend(p)"
       >
         <l-popup>
           <div style="display:flex; flex-direction:column; gap:.5rem">
-            <strong>{{ p.name }}</strong>
+            <strong>{{ p.title }}</strong>
             <a :href="`/${p.slug}`" @click.prevent="openLegend(p)">Abrir detalhes</a>
-            <a
-              v-for="(lk, i) in p.links.filter(l => l.href)"
-              :key="i"
-              :href="lk.href"
-              target="_blank" rel="noopener"
-            >
-              {{ lk.label }}
-            </a>
           </div>
         </l-popup>
       </l-marker>

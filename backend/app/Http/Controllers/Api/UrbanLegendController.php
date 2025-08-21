@@ -24,6 +24,12 @@ class UrbanLegendController extends Controller
         if ($request->has('city')) {
             $legends->where('city', $request->city);
         }
+        if ($request->has('uuid')) {
+            $legends->where('uuid', $request->uuid);
+        }
+        if ($request->has('slug')) {
+            $legends->where('slug', $request->slug);
+        }
 
         $legends = $legends->get();
 
@@ -31,6 +37,7 @@ class UrbanLegendController extends Controller
             return [
                 'uuid' => $legend->uuid,
                 'title' => $legend->title,
+                'slug' => $legend->slug,
                 'description' => $legend->description,
                 'latitude' => $legend->latitude,
                 'longitude' => $legend->longitude,
@@ -41,6 +48,7 @@ class UrbanLegendController extends Controller
 
         return response()->json($filtered);
     }
+
     public function store(StoreUrbanLegendRequest $request)
     {
         try {
@@ -69,8 +77,9 @@ class UrbanLegendController extends Controller
 
             $validatedData = $request->validated();
 
-            $update = UrbanLegend::select(['uuid' => $uuid])->update($validatedData);
-
+            $update = UrbanLegend::where('uuid', $uuid)->firstOrFail();
+            $update->update($validatedData); 
+            
             return response()->json([
                 'message' => 'Lenda atualizada com sucesso!',
                 'data' => $update,

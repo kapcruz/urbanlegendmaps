@@ -4,49 +4,24 @@ namespace App\Http\Controllers\Api;
 
 use Exception;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreUrbanLegendRequest;
 use App\Http\Requests\DeleteUrbanLegendRequest;
 use Illuminate\Http\Request;
 use App\Models\UrbanLegend;
 use App\Models\User;
+use App\Http\Resources\UrbanLegendResource;
+use App\Services\Interfaces\UrbanLegendServiceInterface;
 
 class UrbanLegendController extends Controller
 {
+    public function __construct(protected UrbanLegendServiceInterface $service) {}
 
     public function show(Request $request)
     {
-        $legends = UrbanLegend::query();
+        $filters = $request->only(['country','city','uuid','slug']);
+        $legends = $this->service->list($filters);
 
-        if ($request->has('country')) {
-            $legends->where('country', $request->country);
-        }
-        if ($request->has('city')) {
-            $legends->where('city', $request->city);
-        }
-        if ($request->has('uuid')) {
-            $legends->where('uuid', $request->uuid);
-        }
-        if ($request->has('slug')) {
-            $legends->where('slug', $request->slug);
-        }
-
-        $legends = $legends->get();
-
-        $filtered = $legends->map(function ($legend) {
-            return [
-                'uuid' => $legend->uuid,
-                'title' => $legend->title,
-                'slug' => $legend->slug,
-                'description' => $legend->description,
-                'latitude' => $legend->latitude,
-                'longitude' => $legend->longitude,
-                'country' => $legend->country,
-                'city' => $legend->city
-            ];
-        });
-
-        return response()->json($filtered);
+        return UrbanLegendResource::collection($legends);
     }
 
     public function store(StoreUrbanLegendRequest $request)
@@ -69,6 +44,10 @@ class UrbanLegendController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+
+        $legend = $this->service->create($r->validated());
+        return (new UrbanLegendResource($legend))->response()->setStatusCode(201);
+        
     }
 
     public function update(StoreUrbanLegendRequest $request, string $uuid)
@@ -96,7 +75,6 @@ class UrbanLegendController extends Controller
     public function destroy(DeleteUrbanLegendRequest $request, string $uuid)
     {
         try {
-
            UrbanLegend::select(['uuid' => $uuid])->delete();
 
             return response()->json([

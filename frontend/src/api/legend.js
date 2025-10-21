@@ -1,9 +1,11 @@
 import api from "./connect"
 
-export function getLegends() {
-  return api.get("/legends")
+export async function getLegends() {
+  const response = await api.get("/legends")
+  return response.data 
 }
 
-export function getLegendBySlug(slug) {
-  return api.get(`/legends?slug=${slug}`)
+export async function getLegendBySlug(slug) {
+  const response = await api.get(`/legends?slug=${slug}`)
+  return response.data 
 }

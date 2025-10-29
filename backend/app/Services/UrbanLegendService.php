@@ -8,7 +8,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\UrbanLegend;
 use App\Models\User;
 use App\Services\Interfaces\UrbanLegendServiceInterface;
-
+use Illuminate\Support\Arr;
 class UrbanLegendService implements UrbanLegendServiceInterface
 {
     public function __construct(
@@ -28,6 +28,8 @@ class UrbanLegendService implements UrbanLegendServiceInterface
 
     public function create(array $data)
     {
+        $data = Arr::except($data, ['slug']);
+
         $base = Str::slug($data['title']) ?: 'item';
 
         $exists = UrbanLegend::query()
@@ -47,8 +49,10 @@ class UrbanLegendService implements UrbanLegendServiceInterface
         return UrbanLegend::create($data);
     }
 
-    public function update(string $uuid, array $data)
+    public function update(string $uuid, array $data): UrbanLegend
     {
+        $data = Arr::except($data, ['slug']);
+        
         $legend = $this->find($uuid);
 
         DB::transaction(function () use ($legend, $data) {

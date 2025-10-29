@@ -6,6 +6,7 @@ use Exception;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUrbanLegendRequest;
 use App\Http\Requests\DeleteUrbanLegendRequest;
+use App\Http\Requests\UpdateUrbanLegendRequest;
 use Illuminate\Http\Request;
 use App\Models\UrbanLegend;
 use App\Models\User;
@@ -46,25 +47,10 @@ class UrbanLegendController extends Controller
         
     }
 
-    public function update(StoreUrbanLegendRequest $request, string $uuid)
+    public function update(UpdateUrbanLegendRequest $request, string $uuid)
     {
-        try {
-
-            $validatedData = $request->validated();
-
-            $update = UrbanLegend::where('uuid', $uuid)->firstOrFail();
-            $update->update($validatedData); 
-            
-            return response()->json([
-                'message' => 'Lenda atualizada com sucesso!',
-                'data' => $update,
-            ], 201);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Erro ao criar lendas',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        $legend = $this->service->update($uuid, $request->validated());
+        return new UrbanLegendResource($legend);
     }
 
 

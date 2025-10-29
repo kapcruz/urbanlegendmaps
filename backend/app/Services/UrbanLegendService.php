@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use App\Models\UrbanLegend;
 use App\Models\User;
 use App\Services\Interfaces\UrbanLegendServiceInterface;
@@ -26,11 +28,23 @@ class UrbanLegendService implements UrbanLegendServiceInterface
 
     public function create(array $data)
     {
-        $data['user_id'] = $this->userModel->firstOrFail()->id;
+        $base = Str::slug($data['title']) ?: 'item';
 
-        return DB::transaction(function () use ($data) {
-            return $this->model->create($data);
-        });
+        $exists = UrbanLegend::query()
+        ->where('slug', $base)
+        ->exists();
+
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'title' => ['There is already an urban legend with this title.'],
+            ]);
+        }
+
+        $user = User::first();
+        $data['user_id'] = $user->id;
+        $data['slug'] = $base;
+
+        return UrbanLegend::create($data);
     }
 
     public function update(string $uuid, array $data)

@@ -6,9 +6,24 @@ use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-
+use Illuminate\Support\Str;
+use App\Rules\UniqueLegendTitle;
+/**
+ * @mixin Request
+ */
 class StoreUrbanLegendRequest extends FormRequest
 {
+
+    /**
+     * @mixin Request
+     */
+    protected function prepareForValidation(): void
+    {
+        /** @var Request $this */
+        $this->merge([
+            'slug' => Str::slug((string) $this->input('title')) ?: 'item',
+        ]);
+    }
 
     protected function failedValidation(Validator $validator)
     {
@@ -18,45 +33,36 @@ class StoreUrbanLegendRequest extends FormRequest
         ], 422));
     }
 
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
-
         return [
-            'title' => 'required|string|max:255',
+            'title'       => ['required','string','max:255', new UniqueLegendTitle],
+            'slug'        => [
+                'required','string','max:255',
+                Rule::unique('urban_legends', 'slug')->whereNull('deleted_at'),
+            ],
             'description' => 'nullable|string',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'country' => ['required', Rule::in(config('countries'))],
-            'city' => 'required|string|max:100'
+            'latitude'    => 'required|numeric',
+            'longitude'   => 'required|numeric',
+            'country'     => ['required', Rule::in(config('countries'))],
+            'city'        => 'required|string|max:100',
         ];
     }
 
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array<string, string>
-     */
     public function messages(): array
     {
         return [
             'title.required' => 'Set a title. Title is required.',
-            'latitude.required' => 'Set a latitude. Latitude is required.',
+            'slug.unique'    => 'There is already an urban legend with this title.',
+            'latitude.required'  => 'Set a latitude. Latitude is required.',
             'longitude.required' => 'Set a longitude. Longitude is required.',
-            'country.required' => 'Set a country. Country is required.',
-            'city.required' => 'Set a city. City is required.'
+            'country.required'   => 'Set a country. Country is required.',
+            'city.required'      => 'Set a city. City is required.'
         ];
     }
 }

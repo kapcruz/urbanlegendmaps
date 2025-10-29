@@ -11,6 +11,9 @@ use App\Models\UrbanLegend;
 use App\Models\User;
 use App\Http\Resources\UrbanLegendResource;
 use App\Services\Interfaces\UrbanLegendServiceInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 
 class UrbanLegendController extends Controller
 {
@@ -27,26 +30,19 @@ class UrbanLegendController extends Controller
     public function store(StoreUrbanLegendRequest $request)
     {
         try {
-            $validatedData = $request->validated();
-
-            $user = User::first();
-            $validatedData['user_id'] = $user->id;
-
-            $post = UrbanLegend::create($validatedData);
-
-            return response()->json([
-                'message' => 'Lenda criada com sucesso!',
-                'data' => $post,
-            ], 201);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Erro ao criar lendas',
-                'error' => $e->getMessage(),
-            ], 500);
+            $legend = $this->service->create($request->validated());
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000' && str_contains($e->getMessage(), 'urban_legends_title_key_unique')) {
+                throw ValidationException::withMessages([
+                    'title' => ['There is already an urban legend with this title.'],
+                ]);
+            }
+            throw $e;
         }
 
-        $legend = $this->service->create($r->validated());
-        return (new UrbanLegendResource($legend))->response()->setStatusCode(201);
+        return (new UrbanLegendResource($legend))
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
         
     }
 
@@ -74,18 +70,8 @@ class UrbanLegendController extends Controller
 
     public function destroy(DeleteUrbanLegendRequest $request, string $uuid)
     {
-        try {
-           UrbanLegend::select(['uuid' => $uuid])->delete();
-
-            return response()->json([
-                'message' => 'Lenda deletada com sucesso!'
-            ], 201);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Erro ao criar lendas',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        $this->service->delete($uuid);
+        return response()->noContent();
     }
 
 }

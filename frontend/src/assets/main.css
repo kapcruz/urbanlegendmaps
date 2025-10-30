@@ -1,4 +1,4 @@
-@import './base.css';
+@import "./base.css";
 
 #app {
   width: 100%;
@@ -26,23 +26,17 @@ a {
   }
 }
 
-
-
 .panel {
   width: 100%;
-  min-height: 100dvh; 
-  display: flex; 
-  align-items: stretch; 
+  min-height: 100dvh;
+  display: flex;
+  align-items: stretch;
   justify-content: center;
   background: var(--background);
   color: var(--white);
-  padding: calc(env(safe-area-inset-top, 0) + 8px)
-           calc(env(safe-area-inset-right, 0) + 12px)
-           calc(env(safe-area-inset-bottom, 0) + 12px)
-           calc(env(safe-area-inset-left, 0) + 12px);
+  padding: calc(env(safe-area-inset-top, 0) + 8px) calc(env(safe-area-inset-right, 0) + 12px)
+    calc(env(safe-area-inset-bottom, 0) + 12px) calc(env(safe-area-inset-left, 0) + 12px);
 }
-
-
 
 .wrapper {
   width: 100%;

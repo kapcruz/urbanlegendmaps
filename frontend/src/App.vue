@@ -1,5 +1,5 @@
 <script setup>
-  import 'leaflet/dist/leaflet.css'
+  import "leaflet/dist/leaflet.css";
 </script>
 
 <template>

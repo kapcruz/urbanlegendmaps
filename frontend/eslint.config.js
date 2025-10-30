@@ -1,22 +1,27 @@
-import js from '@eslint/js';
-import pluginVue from 'eslint-plugin-vue';
-import globals from 'globals';
-import { defineConfig } from 'eslint/config';
+import js from "@eslint/js";
+import globals from "globals";
+import pluginVue from "eslint-plugin-vue";
+import { defineConfig } from "eslint/config";
+import prettier from "eslint-config-prettier";
 
 export default defineConfig([
   {
-    files: ['**/*.{js,mjs,cjs,vue}'],
+    files: ["**/*.{js,vue}"],
+    ignores: ["dist", "node_modules"],
     languageOptions: {
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.es2021,
+      },
     },
-    plugins: {
-      vue: pluginVue,
-    },
+    extends: [js.configs.recommended, ...pluginVue.configs["flat/essential"], prettier],
     rules: {
-      ...pluginVue.configs['vue3-recommended'].rules,
+      "vue/multi-word-component-names": [
+        "error",
+        {
+          ignores: ["App.vue"],
+        },
+      ],
     },
-    extends: [
-      js.configs.recommended
-    ],
-  }
+  },
 ]);

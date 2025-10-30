@@ -5,7 +5,6 @@
 A web application to map and catalog urban legends from around the world.  
 This project is built with **Laravel** for the backend API and **Vue.js** for the frontend.
 
-
 ### 🧰 Tech Stack
 
 **Backend:** Laravel (PHP)  
@@ -31,6 +30,7 @@ cp .env.example .env
 ```bash
 npm run dev
 ```
+
 ## Run the Development Server
 
 ```bash
@@ -40,8 +40,6 @@ npm run dev
 Your frontend will be available at:
 
 👉 http://localhost:5173: (or the port shown in your terminal)
-
-
 
 ## ⚙️ Environment Variables
 
@@ -57,6 +55,7 @@ The backend `.env` file contains the main API configuration:
 APP_PORT=8000
 API_SECRET_KEY=api_secret_key_here
 ```
+
 APP_PORT → Defines the port the Laravel API will run on (default: 8000)
 
 API_SECRET_KEY → A secret key used to authenticate requests from the frontend
@@ -69,6 +68,7 @@ The frontend .env file must reference the backend’s URL and secret key:
 VITE_API_URL=http://localhost:8000
 VITE_API_TOKEN=api_secret_key_here
 ```
+
 VITE_API_URL → The URL of the Laravel API (it should match the backend APP_PORT)
 
 VITE_API_TOKEN → Must be identical to the backend’s API_SECRET_KEY
@@ -83,8 +83,10 @@ API_SECRET_KEY=secret-key
 ```
 
 Then your frontend .env should look like this:
+
 ```env
 VITE_API_URL=http://localhost:8000
 VITE_API_TOKEN=secret-key
 ```
+
 This ensures the frontend can properly communicate with the API.

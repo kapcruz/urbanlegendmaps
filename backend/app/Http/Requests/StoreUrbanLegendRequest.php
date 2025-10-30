@@ -14,17 +14,6 @@ use App\Rules\UniqueLegendTitle;
 class StoreUrbanLegendRequest extends FormRequest
 {
 
-    /**
-     * @mixin Request
-     */
-    protected function prepareForValidation(): void
-    {
-        /** @var Request $this */
-        $this->merge([
-            'slug' => Str::slug((string) $this->input('title')) ?: 'item',
-        ]);
-    }
-
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
@@ -42,10 +31,6 @@ class StoreUrbanLegendRequest extends FormRequest
     {
         return [
             'title'       => ['required','string','max:255', new UniqueLegendTitle],
-            'slug'        => [
-                'required','string','max:255',
-                Rule::unique('urban_legends', 'slug')->whereNull('deleted_at'),
-            ],
             'description' => 'nullable|string',
             'latitude'    => 'required|numeric',
             'longitude'   => 'required|numeric',
@@ -58,7 +43,6 @@ class StoreUrbanLegendRequest extends FormRequest
     {
         return [
             'title.required' => 'Set a title. Title is required.',
-            'slug.unique'    => 'There is already an urban legend with this title.',
             'latitude.required'  => 'Set a latitude. Latitude is required.',
             'longitude.required' => 'Set a longitude. Longitude is required.',
             'country.required'   => 'Set a country. Country is required.',

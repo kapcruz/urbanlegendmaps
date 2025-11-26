@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('urban_legends', function (Blueprint $table) {
             $table->string('title_key', 255)->nullable()->after('title');
-            $table->unique('title_key', 'urban_legends_title_key_unique');
         });
     }
 
@@ -23,7 +22,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('urban_legends', function (Blueprint $table) {
-            $table->dropUnique(['title_key']);
             $table->dropColumn('title_key');
         });
     }

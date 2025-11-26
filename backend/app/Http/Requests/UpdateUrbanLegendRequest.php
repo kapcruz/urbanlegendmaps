@@ -6,7 +6,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Rules\UniqueLegendTitle;
 
 class UpdateUrbanLegendRequest extends FormRequest
 {
@@ -29,7 +28,7 @@ class UpdateUrbanLegendRequest extends FormRequest
         $uuid = $this->route('uuid');
 
         return [
-            'title'       => ['sometimes','string','max:255', new UniqueLegendTitle($uuid)],
+            'title'       => ['sometimes','string','max:255'],
             'description' => ['sometimes','nullable','string'],
             'latitude'    => ['sometimes','numeric'],
             'longitude'   => ['sometimes','numeric'],

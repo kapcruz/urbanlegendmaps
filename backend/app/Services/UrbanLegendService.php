@@ -30,21 +30,15 @@ class UrbanLegendService implements UrbanLegendServiceInterface
     {
         $data = Arr::except($data, ['slug']);
 
-        $base = Str::slug($data['title']) ?: 'item';
+        $user = User::first();
 
-        $exists = UrbanLegend::query()
-        ->where('slug', $base)
-        ->exists();
-
-        if ($exists) {
+        if ($user === null) {
             throw ValidationException::withMessages([
-                'title' => ['There is already an urban legend with this title.'],
+                'user_id' => ['Need create a user before creating an urban legend.'],
             ]);
         }
 
-        $user = User::first();
         $data['user_id'] = $user->id;
-        $data['slug'] = $base;
 
         return UrbanLegend::create($data);
     }

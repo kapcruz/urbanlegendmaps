@@ -6,8 +6,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Str;
-use App\Rules\UniqueLegendTitle;
 /**
  * @mixin Request
  */
@@ -30,7 +28,7 @@ class StoreUrbanLegendRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'       => ['required','string','max:255', new UniqueLegendTitle],
+            'title'       => ['required','string','max:255'],
             'description' => 'nullable|string',
             'latitude'    => 'required|numeric',
             'longitude'   => 'required|numeric',

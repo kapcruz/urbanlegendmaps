@@ -92,21 +92,6 @@ class UrbanLegendStoreTest extends TestCase
         $res->assertStatus(422)
             ->assertJsonValidationErrors(['title']);
     }
-
-    public function test_rejects_duplicate_title_by_title_key_rule(): void
-    {
-        User::factory()->create();
-
-        $this->withHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
-        ])->postJson('/api/legend', $this->payload())->assertCreated();
-
-        $res = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
-        ])->postJson('/api/legend', $this->payload());
-        $res->assertStatus(422)->assertJsonValidationErrors(['title']);
-    }
-
     
     public function test_updates_an_urban_legend_and_returns_200(): void
     {
@@ -144,6 +129,28 @@ class UrbanLegendStoreTest extends TestCase
             'title_key' => Str::slug($newTitle),
             'slug'      => Str::slug($newTitle),
         ]);
+    }
+
+
+    public function test_slug_is_unique_even_with_soft_deleted_records_policy_a(): void
+    {
+        User::factory()->create();
+
+        $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->postJson('/api/legend', $this->payload())->assertCreated();
+
+        $first = UrbanLegend::first();
+        $first->delete(); 
+
+        $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->postJson('/api/legend', $this->payload())->assertCreated();
+
+        $all = UrbanLegend::withTrashed()->orderBy('created_at')->get();
+
+        $this->assertEquals(Str::slug('Loira do Banheiro'), $all[0]->slug);
+        $this->assertEquals(Str::slug('Loira do Banheiro') . '-2', $all[1]->slug);
     }
 
 

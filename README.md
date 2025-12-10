@@ -131,3 +131,8 @@ This ensures the frontend can properly communicate with the API.
 Make sure Docker is running before executing any commands.
 
 You can customize the .env files in both the backend and frontend directories as needed.
+
+
+## API Documentation
+
+[Documentation](./docs/api.md)

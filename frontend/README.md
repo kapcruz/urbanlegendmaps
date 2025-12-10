@@ -90,3 +90,8 @@ VITE_API_TOKEN=secret-key
 ```
 
 This ensures the frontend can properly communicate with the API.
+
+
+## API Documentation
+
+[Documentation](../docs/api.md)

@@ -100,4 +100,4 @@ This ensures the frontend can properly communicate with the API.
 
 ## API Documentation
 
-[Documentation](./docs/api.md)
+[Documentation](../docs/api.md)
